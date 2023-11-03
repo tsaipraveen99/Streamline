@@ -1,5 +1,6 @@
 variable "project" {
   description = "Your GCP Project ID"
+  default = "astute-synapse-404000"
   type        = string
 }
 
@@ -9,7 +10,7 @@ variable "region" {
   type        = string
 }
 
-variable "zone" {
+variable "zone" { 
   description = "Your project zone"
   default     = "us-central1-a"
   type        = string

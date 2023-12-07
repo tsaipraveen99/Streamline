@@ -64,7 +64,7 @@ with DAG(
     description = f'Execute only once to create songs table in bigquery',
     schedule_interval="@once", #At the 5th minute of every hour
     start_date=datetime(2022,3,20),
-    end_date=datetime(2022,3,20),
+    #end_date=datetime(2022,3,20),
     catchup=True,
     tags=['streamline']
 ) as dag:

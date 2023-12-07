@@ -16,7 +16,7 @@ EVENTS = ['listen_events', 'page_view_events', 'auth_events'] # we have data com
 
 GCP_PROJECT_ID = os.environ.get('GCP_PROJECT_ID')
 GCP_GCS_BUCKET = os.environ.get('GCP_GCS_BUCKET')
-BIGQUERY_DATASET = os.environ.get('BIGQUERY_DATASET')
+BIGQUERY_DATASET = os.environ.get('BIGQUERY_DATASET','streamline_stg')
 
 EXECUTION_MONTH = '{{ logical_date.strftime("%-m") }}'
 EXECUTION_DAY = '{{ logical_date.strftime("%-d") }}'

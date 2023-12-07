@@ -19,8 +19,13 @@ def check_gcs_data_existence(bucket_name, prefix):
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blobs = storage_client.list_blobs(bucket, prefix=prefix)
-    return any(fnmatch.fnmatch(blob.name, f'{prefix}/*') for blob in blobs)
+    
+    # Debugging: log the blobs found
+    found_blobs = [blob.name for blob in blobs]
+    print(f"Checking for data at prefix: {prefix}")
+    print(f"Found blobs: {found_blobs}")
 
+    return any(fnmatch.fnmatch(blob.name, f'{prefix}/*') for blob in found_blobs)
 
 EVENTS = ['listen_events', 'page_view_events', 'auth_events'] # we have data coming in from three events
 

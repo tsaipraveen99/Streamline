@@ -26,9 +26,9 @@ CSV_OUTFILE = f'{AIRFLOW_HOME}/{CSV_FILENAME}'
 PARQUET_OUTFILE = f'{AIRFLOW_HOME}/{PARQUET_FILENAME}'
 TABLE_NAME = 'songs'
 
-GCP_PROJECT_ID = os.environ.get('GCP_PROJECT_ID')
-GCP_GCS_BUCKET = os.environ.get('GCP_GCS_BUCKET')
-BIGQUERY_DATASET = os.environ.get('BIGQUERY_DATASET', 'streamline_stg')
+GCP_PROJECT_ID = 'astute-synapse-404000'
+GCP_GCS_BUCKET = 'dbsys-streamline'
+BIGQUERY_DATASET = 'streamline_stg'
 
 
 def convert_to_parquet(csv_file, parquet_file):

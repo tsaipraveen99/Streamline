@@ -9,23 +9,6 @@ from task_templates import (create_external_table,
                             create_empty_table, 
                             insert_job, 
                             delete_external_table)
-from google.cloud import storage
-import fnmatch
-
-def check_gcs_data_existence(bucket_name, prefix):
-    """
-    Check if there is data in GCS bucket for the given prefix.
-    """
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-    blobs = storage_client.list_blobs(bucket, prefix=prefix)
-    
-    # Debugging: log the blobs found
-    found_blobs = [blob.name for blob in blobs]
-    print(f"Checking for data at prefix: {prefix}")
-    print(f"Found blobs: {found_blobs}")
-
-    return any(fnmatch.fnmatch(blob.name, f'{prefix}/*') for blob in found_blobs)
 
 EVENTS = ['listen_events', 'page_view_events', 'auth_events'] # we have data coming in from three events
 
@@ -81,14 +64,7 @@ with DAG(
         external_table_name = f'{staging_table_name}_{EXECUTION_DATETIME_STR}'
         events_data_path = f'{staging_table_name}/month={EXECUTION_MONTH}/day={EXECUTION_DAY}/hour={EXECUTION_HOUR}'
         events_schema = schema[event]
-        check_data_task = ShortCircuitOperator(
-            task_id=f'check_data_for_{event}',
-            python_callable=check_gcs_data_existence,
-            op_kwargs={
-                'bucket_name': GCP_GCS_BUCKET,
-                'prefix': events_data_path
-            },
-        )
+
         create_external_table_task = create_external_table(event,
                                                            GCP_PROJECT_ID, 
                                                            BIGQUERY_DATASET, 
@@ -112,9 +88,9 @@ with DAG(
                                                            BIGQUERY_DATASET, 
                                                            external_table_name)
                     
-        check_data_task >> create_external_table_task
-        create_external_table_task >> create_empty_table_task
-        create_empty_table_task >> execute_insert_query_task
-        execute_insert_query_task >> delete_external_table_task
-        delete_external_table_task >> initate_dbt_task
-        initate_dbt_task >> execute_dbt_task
+        create_external_table_task >> \
+        create_empty_table_task >> \
+        execute_insert_query_task >> \
+        delete_external_table_task >> \
+        initate_dbt_task >> \
+        execute_dbt_task
